@@ -10,7 +10,11 @@ export const StyledCell = styled.div<StyledCellProps>`
       cursor: pointer;
       background-color: ${cellColors[props.currentPlayer]};
     }
-  ` : ''}
+  ` : ''};
+  ${(props) => !props.isFieldClickable ? `
+    pointer-events: none;
+    opacity: 0.7;
+  ` : ''};
   width: 5em;
   height: 5em;
   border: solid black 1px;

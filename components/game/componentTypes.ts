@@ -9,6 +9,7 @@ export interface FieldProps extends WithOnMove {
 interface WithOnMove {
   onMove: (m: Move) => void,
   isMoveLoading: boolean,
+  isFieldClickable: boolean,
 }
 
 interface Commons {
@@ -16,6 +17,7 @@ interface Commons {
   isPossible: boolean,
   currentPlayer: Player,
   coords: Coords,
+  isFieldClickable: boolean, //todo move double
 }
 export interface CellProps extends Commons, WithOnMove {
 }

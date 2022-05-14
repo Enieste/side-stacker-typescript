@@ -25,8 +25,10 @@ export const typeDefs = gql`
     game: Game,
   }
   type Mutation {
-    makeMove(move: MoveInput!): Game,
-    initGame: Game,
+    makeMove(move: MoveInput!): Game!,
+    initGame: Game!,
   }
-  
+  type Subscription {
+    moveMade: Game!,
+  }
 `;

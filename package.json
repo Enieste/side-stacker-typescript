@@ -12,9 +12,11 @@
   },
   "dependencies": {
     "@apollo/client": "^3.6.2",
+    "@types/ws": "^8.5.3",
     "apollo-server-core": "^3.7.0",
     "apollo-server-micro": "^3.7.0",
     "graphql": "^16.5.0",
+    "graphql-ws": "^5.8.2",
     "lodash": "^4.17.21",
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",

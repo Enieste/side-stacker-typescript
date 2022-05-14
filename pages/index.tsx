@@ -6,8 +6,6 @@ import {
   useMutation
 } from "@apollo/client";
 
-
-
 import {omit} from "ramda";
 import {GET_GAME, INIT_GAME, MAKE_MOVE} from "../graphql/queries";
 
@@ -33,7 +31,7 @@ const Cell = (props: CellProps) => {
   );
 };
 
-const Field = ({ field, possibleCoords, currentPlayer, onMove, isMoveLoading }: FieldProps) => {
+const Field = ({ field, possibleCoords, currentPlayer, onMove, isMoveLoading, isFieldClickable }: FieldProps) => {
   return (<div>
     {field.map((row, y: Y) => {
       return <Row key={y}>{row.map((cell, x: X) => <Cell
@@ -43,6 +41,7 @@ const Field = ({ field, possibleCoords, currentPlayer, onMove, isMoveLoading }: 
         currentPlayer={currentPlayer}
         onMove={onMove}
         isMoveLoading={isMoveLoading}
+        isFieldClickable={isFieldClickable}
         coords={{ x, y }}
       />)}
       </Row>
@@ -68,16 +67,31 @@ export default function Home() {
   const handleMove = async (move: Move) => {
     makeMoveMutation({
       variables: {
-        move,
+        move
       }
     });
   }
+
+  const isFieldClickable = (): boolean => {
+    if (game && game.winner) return false;
+    // todo if the right player
+    return true;
+  }
+
   if (gameLoading) return <div>Loading...</div>;
   if (gameLoadingError) return <div>Game loading error {gameLoadingError.message}</div>;
   return <div>
     <button onClick={startNewGame}>
       New Game
     </button>
-    { game && <Field field={game.field} possibleCoords={game.possibleCoords} currentPlayer={game.currentPlayer} onMove={handleMove} isMoveLoading={moveLoading} /> }
+    { game && <Field
+      field={game.field}
+      possibleCoords={game.possibleCoords}
+      currentPlayer={game.currentPlayer}
+      onMove={handleMove}
+      isMoveLoading={moveLoading}
+      isFieldClickable={isFieldClickable()}
+    /> }
+    {game?.winner && <div>The winner is Player {game.winner}</div>}
   </div>
 }

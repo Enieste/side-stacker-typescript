@@ -33,3 +33,11 @@ export const MAKE_MOVE = gql`
     }
   }
 `;
+
+export const GAME_SUBSCRIPTION = gql`
+  subscription OnMoveMade {
+    moveMade {
+      ${GAME_RESPONSE_FIELDS}
+    }
+  }
+`;

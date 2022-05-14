@@ -1,6 +1,7 @@
 import {GameResponse, Move} from "../components/game/types";
 import {getGame, initGame} from "../lib/game";
 import {createGameResponse} from "../components/game/utils";
+import {IExecutableSchemaDefinition} from "@graphql-tools/schema";
 
 export const resolvers = {
   Query: {
@@ -18,6 +19,15 @@ export const resolvers = {
     },
     initGame: (): GameResponse => {
       return createGameResponse(initGame())
+    }
+  },
+  Subscription: {
+    moveMade: {
+      subscribe: async function* () {
+        for await (const word of ["Hello", "Bonjour", "Ciao"]) {
+          yield getGame();
+        }
+      },
     }
   }
 }
