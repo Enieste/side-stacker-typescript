@@ -3,15 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "ts-node server.ts",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production ts-node server.ts",
     "lint": "next lint",
     "test": "jest --watch",
     "test:ci": "jest --ci"
   },
   "dependencies": {
     "@apollo/client": "^3.6.2",
+    "@graphql-yoga/node": "^2.6.0",
     "@types/ws": "^8.5.3",
     "apollo-server-core": "^3.7.0",
     "apollo-server-micro": "^3.7.0",
@@ -24,7 +25,8 @@
     "ramda": "^0.28.0",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "ts-node": "^10.7.0"
   },
   "devDependencies": {
     "@types/ramda": "^0.28.12",

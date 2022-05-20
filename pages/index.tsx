@@ -7,7 +7,8 @@ import {
 } from "@apollo/client";
 
 import {omit} from "ramda";
-import {GET_GAME, INIT_GAME, MAKE_MOVE} from "../graphql/queries";
+import {GAME_SUBSCRIPTION, GET_GAME, INIT_GAME, MAKE_MOVE} from "../graphql/queries";
+import {useEffect} from "react";
 
 const cellKey = (x: X, y: Y) => x + "_" + y;
 
@@ -49,9 +50,31 @@ const Field = ({ field, possibleCoords, currentPlayer, onMove, isMoveLoading, is
   </div>)
 };
 
+const useGame = () => {
+  const { subscribeToMore, ...others } = useQuery<{ game: GameResponse }>(GET_GAME);
+  useEffect(() => {
+    const unsubscribe = subscribeToMore<{ moveMade: GameResponse }>({
+      document: GAME_SUBSCRIPTION,
+      updateQuery: (prev, { subscriptionData }) => {
+        console.log("subscriptionData", subscriptionData)
+        if (!subscriptionData.data?.moveMade) return {
+          game: null,
+        };
+        return {
+          game: subscriptionData.data.moveMade,
+        }
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+  return others;
+};
+
 export default function Home() {
 
-  const { loading: gameLoading, error: gameLoadingError, data: gameResponse } = useQuery<{ game: GameResponse }>(GET_GAME);
+  const { loading: gameLoading, error: gameLoadingError, data: gameResponse } = useGame();
   const [initGameMutation, { loading: initGameLoading, error: initGameError }] = useMutation(INIT_GAME, {
     refetchQueries: [GET_GAME],
   });

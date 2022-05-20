@@ -2,6 +2,13 @@ import {GameResponse, Move} from "../components/game/types";
 import {getGame, initGame} from "../lib/game";
 import {createGameResponse} from "../components/game/utils";
 import {IExecutableSchemaDefinition} from "@graphql-tools/schema";
+import {createPubSub} from "@graphql-yoga/node";
+
+type PS = {
+  "game": [GameResponse];
+};
+
+const pubSub = createPubSub<PS>();
 
 export const resolvers = {
   Query: {
@@ -13,9 +20,10 @@ export const resolvers = {
   Mutation: {
     makeMove: (_: any, m: { move: Move }): GameResponse => {
       const game = getGame();
-      console.log("MOVE", m.move);
       game.makeMove(m.move);
-      return createGameResponse(game);
+      const r = createGameResponse(game);
+      pubSub.publish("game", r);
+      return r;
     },
     initGame: (): GameResponse => {
       return createGameResponse(initGame())
@@ -23,11 +31,8 @@ export const resolvers = {
   },
   Subscription: {
     moveMade: {
-      subscribe: async function* () {
-        for await (const word of ["Hello", "Bonjour", "Ciao"]) {
-          yield getGame();
-        }
-      },
+      subscribe: () => pubSub.subscribe("game"),
+      resolve: (payload) => payload,
     }
   }
 }
